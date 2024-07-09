@@ -23,3 +23,24 @@ To name only the most prominent:
 
 # API Description through Documentation
 APIs are typically accompanied by a **reference guide**; a piece of literature explaining to a developer how to use the API.
+
+
+Unfortunately, everybody working on software development is familiar with one or more of the following problems:
+- unclear documentation
+- incomplete or non-existing documentation
+- information in a language the reader does not understand
+in these cases, to find the information they require developers might have to read source code, debug programs or analyze network traffic, which are gigantic **time sinks**.
+
+# API Description using the OAS
+
+An **API description file** is a **machine-readable** specification of an API. It should strive to be as **complete**, and **fully-detailed** as possible, although absolute completeness is not usually a requirement. Also, just like legal contracts, the more **unambiguous** it is, the more useful it becomes.
+
+its main advantage over documentation which only humans can read is that it enables **automated processing**.
+
+furthermore, a tool can use the API description to **generate boilerplate code** to build provider and consumer applications. Only the business logic needs to be added and the generated code takes care of all the API handling, removing another source of mistakes and making sure that the code and the documentation match. Additionally, if the data passed to the API must satisfy any constraint it can be automatically verified by the boilerplate code, removing even more manual code.
+
+the API description file might include examples, and these examples can be used as responses from **auto-generated mock servers**. This enables early API testing, even before the API provider code is written.
+
+# Structure of an OpenAPI Description
+
+An OpenAPI Description (OAD) describes an HTTP-like API in one or more machine-readable documents (files or network resources). This page describes the syntax of these documents and the minimal structure they must contain.

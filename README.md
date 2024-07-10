@@ -44,3 +44,91 @@ the API description file might include examples, and these examples can be used 
 # Structure of an OpenAPI Description
 
 An OpenAPI Description (OAD) describes an HTTP-like API in one or more machine-readable documents (files or network resources). This page describes the syntax of these documents and the minimal structure they must contain.
+
+## OpenAPI Description Syntax
+
+OpenAPI Descriptions are written as one or more text documents. Each document represents a JSON object, in either JSON or YAML format. **References** are used to link parts of the JSON object(s) to each other, and this linked structure is the complete OpenAPI Description. Parsing begins with an OpenAPI Object, and the document containing that object is known as the **entry document**, commonly called `openapi.json` or `openapi.yaml`.
+
+JSON can represent **Numbers**, **Strings**, **Booleans**, `null`, **values**, **Arrays** and **Objects**. An array is an ordered list of values which can have different types. An object (also called Map) is a collection of name-value pairs where the names (also called Keys or Fields) are unique within the object and the values can have any of the supported types (including other objects or arrays).
+
+here's a comparison showing the difference between yaml and json:
+
+JSON :
+
+```
+{
+    "anObject": {
+        "aNumber": 42,
+        "aString": "this is a string",
+        "aBoolean": true,
+        "nothing": null,
+        "arrayOfNumbers": [
+            1,
+            2,
+            3
+        ]
+    }
+}
+```
+
+YAML:
+
+```
+anObject:
+    aNumber: 42
+    aString: "this is a string"
+    aBoolean: true
+    nothing: null
+    arrayOfNumbers:
+    - 1
+    - 2
+    - 3
+```
+
+YAML is typically preferred because of its slightly reduced file size, but the two formats are completely interchangeable.
+
+## Minimal OpenAPI Description Structure
+
+a minimal OpenAPI Description is a single JSON object containing fields adhering to the strucutre defined in the OpenAPI Specification.
+
+the root object in any OpenAPI Description is the OpenAPI Object, and only two of its fields are mandatory: `openapi` and `info`. Additionally, at least one of `paths`, `components` and `webhooks` is required.
+
+- `openapi` (**string**): this indicates the version of the OAS this OAD is using, e.g. "3.1.1". Using this field tools can check that the description correctly adheres to the specification.
+- `info` (**Info Object)**: this provides general information about the API (like its description, author and contact information) but only mandatory fields are `title` and `version`.
+    - `title` (**string**): a human-readable name for the API, like "Github REST API", useful to keep API collections organized.
+    - `version` (**string**): indicates the version **of the API description** (not to be confused with the OAS version above). Tools can use this field to generate code that ensures that clients and servers are interacting through the same version of the API.
+- `paths` (**Path Objects**): this describes all the **endpoints** of the API, including their parameters and all possible server responses. Server and client code can be generated from this description, along with its documentation.
+
+here's an example of a minimal OpenAPI Description:
+
+```
+openapi: 3.1.0
+info:
+    title: A minimal OpenAPI Description
+    version: 0.0.1
+paths: {} # no endpoints defined
+```
+
+# API endpoints
+
+## The endpoint list
+
+API endpoints (also called Operations or Routes) are called **Paths** in the OAS. The Paths Object, accessible through the `paths` field in the root OpenAPI Object, is the container for all operations supported by the API:
+
+![illustration](https://spec.openapis.org/oas/v3.1.0#pathItemObject)
+
+every field in the Paths Object is a Path Item Object describing one API endpoint. Fields are used instead of an Array because they enforce endpoint name uniqueness at the syntax level.
+
+paths **must start with a forward slash** `/` since they are directly appended to the serever URL to construct the full endpoint URL.
+
+```
+openapi: 3.1.0
+info:
+    tile: Tic Tac Toe
+    description: |
+        This API allows writing down marks on a Tic Tac Toe board and requesting the state of
+        the board or of individual squares.
+    version: 1.0.0
+paths:
+    /board:
+```

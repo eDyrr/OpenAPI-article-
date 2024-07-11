@@ -132,3 +132,93 @@ info:
 paths:
     /board:
 ```
+
+## The Path Item Object
+
+the Path Item Object describes the HTTP operations that can be performed on a path witha seperate Operation Object for each one. Allowed operations match HTTP method names like `get`, `put` or `delete`, to list the most common.
+
+this object also accepts common properties for all operations on the path like `summary` or `description`. The details of each operation are given in each child Operation object.
+
+```
+paths:
+    /board:
+        get:
+            ...
+        put:
+            ...
+```
+
+## The Operation Object
+
+besides giving the operation a `summary` and a `description`, the Operation Object basically describes the operation's parameteres, payload and possible server responses. The rest of this page explains the `responses` field.
+
+```
+paths:
+    /board:
+        get:
+            summary: get the whole board
+            description: retrieves the current state of the board and the winner.
+        parameters:
+            ...
+        responses:
+            ...
+```
+
+## The Responses Object
+
+the Responses Object is a container for the expected answers the server can give to this request. Each field name is an HTTP response code **enclosed in quotation marks** and its value is a Response Object containing details about the response.
+
+at least one response must be given and it is recommended that it corresponds to the success case. 5 wildcards are allowed: `1XX`, `2XX`, `3XX`, `4XX` and `5XX`.
+
+```
+paths:
+    /board:
+        get:
+            responses:
+                "200":
+                    ...
+                "404":
+                    ...
+```
+
+## The Response Object
+
+the Response Object contains a **mandatory** `description` of the meaning of the response in the context of this operation, complementing the sense of the HTTP response codes. This helps developers understand better how to react to this particular code.
+
+the most important field, though, is `content` because it describes the possible payloads of the response. Due to its complexity.
+
+```
+paths:
+    /board:
+        get:
+            responses:
+                "200":
+                    description: everything went fine.
+                    content:
+                        ...
+```
+
+## Tic Tac Toe example
+
+```
+openapi: 3.1.0
+info:
+    title: Tic Tac Toe
+    description: |
+        this API allows writing down marks on a Tic Tac Toe board and requesting the state of the board or of individual squares.
+    version: 1.0.0
+paths:
+    /board:
+        summary: get the whole board
+        description: retrieves the current state of the board and the winner.
+        responses:
+            "200":
+                description: "OK"
+                content:
+                    ...
+```
+
+# Content of Message bodies
+
+## The `content` field
+

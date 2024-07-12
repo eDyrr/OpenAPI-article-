@@ -222,3 +222,139 @@ paths:
 
 ## The `content` field
 
+this field can be found both in Response Objects and Request Body Objects.
+
+!(illustration)[https://spec.openapis.org/oas/v3.1.0#schemaObject]
+
+this allows returning content (or accepting content) in **different formats**, each one with a different structure described by the Media Type Object. **Wildcards** are accepted for the media types, with more specific ones taking precedence over the generic ones.
+
+```
+content:
+    application/json:
+        ...
+    text/html:
+        ...
+    text/*:
+        ...
+```
+
+## The Media Type Object
+
+the Media Type Object describes the structure of the content and provides examples for documentation and mocking purposes.
+
+the structure is described in the `schema` field explained next.
+
+```
+content:
+    application/json:
+        schema:
+            ...
+```
+
+## The Schema Object
+
+the Schema Object defines a data type which can be a primitive (integer, string, ...), an array or an object depending on its `type` field.
+
+`type` is a string and its possible values are: `number`, `string`, `array` and `object`.
+
+depending on the selected type a number of other fields are available to further specify the data format.
+
+for example, for `string` types the length of the string can be limited with `minLength` and `maxLength`. Similarly, `integer` types, accept `minimum` and `maximum` values. No matter the type, if the amount of options for the data is limited to a certain set, it can be specified with the `enum` array. All these properties are listed in the Schema Object specification.
+
+Example integer with limited range:
+
+```
+content:
+    application/json:
+        schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+```
+
+example string with only three valid options:
+
+```
+content:
+    application/json:
+        schema:
+            type: string
+            enum:
+                - Alice
+                - Bob
+                - Carl
+```
+
+array types should have an `items` field, which is a Schema Object itself, and defines the type for each element of the array. Additionally, the size of the array can be limited with `minItems` and `maxItems`.
+
+```
+content:
+    application/json:
+        schema:
+            type: array
+            minItems: 1
+            maxItems: 10
+            items:
+                type: integer
+```
+
+finally, the object types should have a `properties` field listing the properties of the object. This field is a map pairing property names with a Schema Object defining their type. This allows building data types as comples as required.
+
+here's an example defining an object with two fields: a `productName` string and a `productPrice` number:
+
+```
+content:
+    application/json:
+        schema:
+            type: object
+                properties:
+                    productName:
+                        type: string
+                    productPrice:
+                        type: number
+```
+
+## Tic Tac Toe example
+
+```
+openapi: 3.1.0
+info:
+    title: Tic Tac Toe
+    description: |
+        this API allows writing down marks on a Tic Tac Toe board and requesting the state of the board or of individual squares.
+    version: 1.0.0
+    paths:
+        /board:
+            get:
+                summary: get the whole board
+                description: retrieves the current state of the board and the winner.
+                responses:
+                    "200":
+                        description: "OK"
+                        content:
+                            application/json:
+                                schema:
+                                    type: object
+                                    properties:
+                                        winner:
+                                            type: string
+                                            enum: [".", "X", "0"]
+                                            description: |
+                                                winner of the game. "." means nobody has won yet.
+                                        board:
+                                            type: array
+                                            maxItems: 3
+                                            minItems: 3
+                                            items:
+                                                type: string
+                                                enum: [".", "X", "0"]
+                                                description: |
+                                                    possible values for a board square.
+                                                    `.` means empty square.
+    ...
+```
+
+the response contains an object in JSON format with 2 fileds:
+
+- `winner` is a string with only three possible values: `.`, `X`, and `0`.
+- `board` is a 3-element array where each item is another 3-element array, effectively building a 3x3 square matrix. Each element in the matrix is a string with only three possible values: `.`, `X` and `0`.

@@ -358,3 +358,16 @@ the response contains an object in JSON format with 2 fileds:
 
 - `winner` is a string with only three possible values: `.`, `X`, and `0`.
 - `board` is a 3-element array where each item is another 3-element array, effectively building a 3x3 square matrix. Each element in the matrix is a string with only three possible values: `.`, `X` and `0`.
+
+
+as the document is getting bigger and more nested, e can name sections to help us reduce the total volume of the document.
+
+# Reusing Descriptions
+
+## The Components Object
+
+the Components Object, accessible through the `components` filed in the root OpenAPI Object, contains definitions for objects to be reused in other parts of the description.
+
+most objects in an OAD can be replaced by a **reference** to a **component**, drastically reducing the OAD's size and maintenance cost.
+
+not all objects can be referenced, though, only those listed as fileds of the Components Object like `schemas`, `responses` and `parameters` to name a few.
